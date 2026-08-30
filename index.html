@@ -69,7 +69,7 @@
       </span>
       <span>
         <strong>Explica FQA</strong>
-        <small>fisica &amp; quimica A</small>
+        <small>Física e Química A</small>
       </span>
     </a>
 
@@ -155,27 +155,17 @@
 
           <p class="notebook-caption">exercício — plano inclinado</p>
 
-          <svg class="notebook-diagram" viewBox="0 0 260 190" xmlns="http://www.w3.org/2000/svg">
-            <line class="ink" x1="20" y1="150" x2="230" y2="150"/>
-            <line class="ink" x1="20" y1="150" x2="150" y2="35"/>
-            <rect class="ink" x="118" y="78" width="34" height="24" transform="rotate(-38 118 78)"/>
-            <line class="flame" x1="135" y1="90" x2="135" y2="140"/>
-            <path class="flame" d="M135 140 l-6 -10 M135 140 l6 -10"/>
-            <line class="copper" x1="135" y1="90" x2="180" y2="70"/>
-            <path class="copper" d="M180 70 l-11 1 M180 70 l-4 -10"/>
-            <text x="140" y="158" font-size="9">mg</text>
-            <text x="185" y="66" font-size="9">N</text>
-            <text x="55" y="140" font-size="9">θ</text>
-          </svg>
+          <figure class="notebook-photo">
+            <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=900&q=80"
+                 alt="Material científico de laboratório usado no estudo da Física">
+          </figure>
 
-          <p class="notebook-caption" style="margin-top:22px;">reação — combustão</p>
+          <p class="notebook-caption" style="margin-top:20px;">reação — combustão</p>
 
-          <svg class="notebook-diagram" viewBox="0 0 260 60" xmlns="http://www.w3.org/2000/svg">
-            <text x="0" y="34" font-size="13">CH₄ + 2 O₂</text>
-            <line class="ink" x1="110" y1="26" x2="145" y2="26"/>
-            <path class="ink" d="M145 26 l-7 -4 M145 26 l-7 4"/>
-            <text x="152" y="34" font-size="13">CO₂ + 2 H₂O</text>
-          </svg>
+          <figure class="notebook-photo notebook-photo-wide">
+            <img src="https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=900&q=80"
+                 alt="Equações químicas escritas num quadro">
+          </figure>
 
         </div>
       </div>
@@ -529,16 +519,10 @@
 
         <p class="exam-visual-caption">gráfico — energia potencial vs. tempo</p>
 
-        <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
-          <line x1="30" y1="10" x2="30" y2="150" class="ink"/>
-          <line x1="30" y1="150" x2="280" y2="150" class="ink"/>
-          <path d="M30 60 C 90 150, 150 20, 210 100 S 260 40, 280 70" class="flame" fill="none"/>
-          <circle cx="90" cy="120" r="2.6" class="fill-copper"/>
-          <circle cx="150" cy="35" r="2.6" class="fill-copper"/>
-          <circle cx="230" cy="55" r="2.6" class="fill-copper"/>
-          <text x="6" y="16" font-size="9">Ep</text>
-          <text x="270" y="163" font-size="9">t</text>
-        </svg>
+        <figure class="exam-photo">
+          <img src="https://images.unsplash.com/photo-1527167151437-87cf28fb6b38?auto=format&fit=crop&w=900&q=80"
+               alt="Ecrã de osciloscópio a mostrar uma onda, associado à leitura de gráficos em Física">
+        </figure>
 
         <div class="exam-badge">
           <span>FQA</span>
@@ -557,6 +541,7 @@
 
 <section class="section location-section" id="localizacao">
   <div class="container location-layout">
+    <div></div>
 
     <div>
       <p class="tag">Localização</p>
@@ -621,12 +606,18 @@
     </div>
 
 
-    <form id="contact-form" class="contact-form">
+    <form id="contact-form" class="contact-form" action="https://formsubmit.co/explica.fqa@gmail.com" method="POST">
 
       <div class="form-header">
         <span>contacto</span>
         <h3>Peça informações</h3>
       </div>
+
+      <!-- Configuração do envio direto (FormSubmit) -->
+      <input type="hidden" name="_subject" value="Novo pedido de informações — Explica FQA">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 
       <label>
         Nome
@@ -672,9 +663,9 @@
                   placeholder="Indique, por exemplo, o que pretende melhorar ou quando gostaria de começar."></textarea>
       </label>
 
-      <button class="button button-primary" type="submit">Preparar email de contacto</button>
+      <button class="button button-primary" type="submit">Enviar pedido</button>
 
-      <p class="form-note">Será aberto o seu programa de email com a mensagem preenchida.</p>
+      <p class="form-note" data-default>O pedido é enviado diretamente, sem abrir o seu programa de email.</p>
 
     </form>
 
@@ -705,7 +696,7 @@
         </span>
         <span>
           <strong>Explica FQA</strong>
-          <small>fisica &amp; quimica A</small>
+          <small>Física e Química A</small>
         </span>
       </a>
 
