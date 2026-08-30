@@ -1,35 +1,58 @@
-const menuButton = document.querySelector('.menu-toggle');
-const menu = document.querySelector('.menu');
+document.addEventListener('DOMContentLoaded', function () {
 
-if (menuButton) {
-  menuButton.addEventListener('click', () => {
-    const open = menu.classList.toggle('open');
-    menuButton.setAttribute('aria-expanded', open);
-  });
-}
+  // Footer year
+  var yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-document.querySelectorAll('.menu a').forEach(link => {
-  link.addEventListener('click', () => {
-    menu.classList.remove('open');
-    menuButton?.setAttribute('aria-expanded', 'false');
-  });
-});
+  // Mobile menu toggle
+  var toggle = document.querySelector('.menu-toggle');
+  var menu = document.getElementById('main-menu');
 
-document.getElementById('year').textContent = new Date().getFullYear();
+  if (toggle && menu) {
+    toggle.addEventListener('click', function () {
+      var isOpen = menu.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
 
-document.getElementById('contact-form').addEventListener('submit', function (event) {
-  event.preventDefault();
-  const data = new FormData(this);
-  const subject = encodeURIComponent('Pedido de informações — Explica FQA');
-  const body = encodeURIComponent(
-`Nome: ${data.get('nome')}
-Email: ${data.get('email')}
-Telefone: ${data.get('telefone') || 'Não indicado'}
-Ano de escolaridade: ${data.get('ano')}
-Modalidade: ${data.get('modalidade')}
+    menu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        menu.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 
-Mensagem:
-${data.get('mensagem')}`
-  );
-  window.location.href = `mailto:explica.fqa@gmail.com?subject=${subject}&body=${body}`;
+  // Contact form -> mailto
+  var form = document.getElementById('contact-form');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var nome = form.nome.value.trim();
+      var email = form.email.value.trim();
+      var telefone = form.telefone.value.trim();
+      var ano = form.ano.value;
+      var modalidade = form.modalidade.value;
+      var mensagem = form.mensagem.value.trim();
+
+      var subject = 'Pedido de informações — Explica FQA';
+      var bodyLines = [
+        'Nome: ' + nome,
+        'Email: ' + email,
+        'Telefone: ' + (telefone || '—'),
+        'Ano: ' + ano,
+        'Modalidade: ' + modalidade,
+        '',
+        mensagem
+      ];
+
+      var mailto =
+        'mailto:explica.fqa@gmail.com' +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(bodyLines.join('\n'));
+
+      window.location.href = mailto;
+    });
+  }
+
 });
