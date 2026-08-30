@@ -22,36 +22,49 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Contact form -> mailto
+  // Contact form -> envio direto por email (via FormSubmit), sem abrir
+  // o programa de email do utilizador.
   var form = document.getElementById('contact-form');
   if (form) {
+    var submitButton = form.querySelector('button[type="submit"]');
+    var note = form.querySelector('.form-note');
+    var defaultNoteText = note ? note.textContent : '';
+
+    var setNote = function (text, isError) {
+      if (!note) return;
+      note.textContent = text;
+      note.style.color = isError ? '#b73c1d' : '';
+    };
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      var nome = form.nome.value.trim();
-      var email = form.email.value.trim();
-      var telefone = form.telefone.value.trim();
-      var ano = form.ano.value;
-      var modalidade = form.modalidade.value;
-      var mensagem = form.mensagem.value.trim();
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'A enviar...';
+      }
+      setNote('A enviar o pedido...', false);
 
-      var subject = 'Pedido de informações — Explica FQA';
-      var bodyLines = [
-        'Nome: ' + nome,
-        'Email: ' + email,
-        'Telefone: ' + (telefone || '—'),
-        'Ano: ' + ano,
-        'Modalidade: ' + modalidade,
-        '',
-        mensagem
-      ];
+      var formData = new FormData(form);
 
-      var mailto =
-        'mailto:explica.fqa@gmail.com' +
-        '?subject=' + encodeURIComponent(subject) +
-        '&body=' + encodeURIComponent(bodyLines.join('\n'));
-
-      window.location.href = mailto;
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Falha no envio');
+          form.reset();
+          if (submitButton) submitButton.textContent = 'Pedido enviado';
+          setNote('Pedido enviado com sucesso. Entrarei em contacto brevemente.', false);
+        })
+        .catch(function () {
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Enviar pedido';
+          }
+          setNote('Não foi possível enviar agora. Tente novamente ou contacte por WhatsApp/email.', true);
+        });
     });
   }
 
