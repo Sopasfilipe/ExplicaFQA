@@ -359,7 +359,9 @@ button{ cursor:pointer; }
 
 .notebook-page{
   position:absolute; inset:0;
-  background: var(--white);
+  background:
+    repeating-linear-gradient(var(--grid-line) 0 1px, transparent 1px 34px),
+    var(--white);
   border:1px solid var(--line-strong);
   border-radius:2px;
   box-shadow: var(--shadow-card);
@@ -370,19 +372,12 @@ button{ cursor:pointer; }
   content:"";
   position:absolute; left:46px; top:0; bottom:0; width:1px;
   background: rgba(217,79,43,.28);
-}
-
-.notebook-page::after{
-  content:"";
-  position:absolute; inset:0;
-  background-image: repeating-linear-gradient(
-    var(--white) 0 33px, var(--grid-line) 33px 34px
-  );
   pointer-events:none;
 }
 
 .notebook-inner{
-  position:absolute; inset:0;
+  position:relative;
+  z-index:1;
   padding: 32px 30px 30px 66px;
 }
 
@@ -394,12 +389,15 @@ button{ cursor:pointer; }
 }
 
 .notebook-diagram{ width:100%; height:auto; }
-.notebook-diagram .ink{ stroke:var(--ink); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
-.notebook-diagram .flame{ stroke:var(--flame); fill:none; stroke-width:1.6; }
-.notebook-diagram .copper{ stroke:var(--copper); fill:none; stroke-width:1.6; }
-.notebook-diagram .fill-copper{ fill:var(--copper); stroke:none; }
-.notebook-diagram .fill-flame{ fill:var(--flame); stroke:none; }
-.notebook-diagram text{
+
+/* Diagram line/fill helpers — shared by every hand-drawn SVG on the
+   page (hero notebook, modality illustrations, exam graph) */
+.ink{ stroke:var(--ink); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.flame{ stroke:var(--flame); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.copper{ stroke:var(--copper); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.fill-copper{ fill:var(--copper); stroke:none; }
+.fill-flame{ fill:var(--flame); stroke:none; }
+svg text{
   font-family:"IBM Plex Mono", monospace;
   fill: var(--ink-soft);
 }
