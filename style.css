@@ -1,732 +1,1059 @@
-<!DOCTYPE html>
-<html lang="pt-PT">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
-  <title>Explica FQA | Explicações de Física e Química A em Guimarães</title>
+/* =========================================================
+   EXPLICA FQA — sistema de design "caderno de laboratório"
+   ========================================================= */
 
-  <meta name="description" content="Explicações de Física e Química A para o ensino secundário. Acompanhamento individual, presencial em Guimarães ou online. Preparação para testes e exames nacionais.">
-  <meta name="keywords" content="explicações Física e Química Guimarães, explicador FQA Guimarães, explicações Física Química A, explicações online FQA, preparação exame Física Química A">
-  <meta name="author" content="Explica FQA">
-  <meta name="robots" content="index,follow">
-  <meta name="theme-color" content="#16232f">
+:root{
+  --paper:      #f2efe5;
+  --paper-2:    #ece7d8;
+  --grid-line:  rgba(20,32,43,.08);
+  --grid-line-2:rgba(20,32,43,.14);
 
-  <link rel="canonical" href="https://www.explicafqa.pt/">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  --ink:        #16232f;
+  --ink-soft:   #46545f;
+  --muted:      #7c8a92;
 
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Explica FQA | Física e Química A">
-  <meta property="og:description" content="Explicações presenciais em Guimarães e online. Mais de 20 anos de experiência.">
-  <meta property="og:locale" content="pt_PT">
+  --line:       #d8d2bf;
+  --line-strong:#c3bca4;
 
-  <link rel="stylesheet" href="style.css">
+  --flame:      #d94f2b;
+  --flame-dark: #b73c1d;
+  --flame-tint: #fbe6dd;
 
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"ProfessionalService",
-    "name":"Explica FQA",
-    "description":"Explicações de Física e Química A para o ensino secundário, presenciais em Guimarães e online.",
-    "email":"explica.fqa@gmail.com",
-    "telephone":"+351933368652",
-    "areaServed":["Guimarães","Portugal","Online"],
-    "serviceType":[
-      "Explicações de Física e Química A",
-      "Preparação para Exames Nacionais",
-      "Explicações Online"
-    ],
-    "address":{
-      "@type":"PostalAddress",
-      "addressLocality":"Guimarães",
-      "addressRegion":"Braga",
-      "addressCountry":"PT"
-    }
+  --copper:     #1f6f63;
+  --copper-dark:#144e45;
+  --copper-tint:#dfeeea;
+
+  --white:      #fffdf8;
+
+  --shadow-card: 0 1px 0 rgba(20,32,43,.05), 0 12px 30px rgba(20,32,43,.07);
+
+  --radius-sm: 3px;
+  --radius:    6px;
+
+  --container: 1180px;
+  --margin-col: 64px;
+
+  --ease: 220ms cubic-bezier(.2,.7,.2,1);
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; scroll-padding-top: 96px; }
+
+body{
+  margin:0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family:"IBM Plex Sans", Arial, sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+img{ display:block; width:100%; height:100%; object-fit:cover; }
+a{ color:inherit; text-decoration:none; }
+button,input,select,textarea{ font:inherit; }
+button{ cursor:pointer; }
+
+.container{
+  width:min(var(--container), calc(100% - 48px));
+  margin-inline:auto;
+  position:relative;
+}
+
+::selection{ background:var(--flame); color:var(--white); }
+
+/* margin rule — runs the length of the page like a notebook binding,
+   only inside sections that opt in via .ruled */
+.ruled{ position:relative; }
+.ruled::before{
+  content:"";
+  position:absolute;
+  left: calc(50% - (var(--container) / 2) + var(--margin-col));
+  top:0; bottom:0;
+  width:1px;
+  background: var(--line-strong);
+}
+.ruled::after{
+  content:"";
+  position:absolute;
+  left: calc(50% - (var(--container) / 2) + var(--margin-col) - 5px);
+  top:0; bottom:0;
+  width:1px;
+  background: var(--flame);
+  opacity:.35;
+}
+@media (max-width:1080px){
+  .ruled::before,.ruled::after{ display:none; }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.skip-link{
+  position:fixed; left:20px; top:-100px; z-index:9999;
+  background:var(--ink); color:var(--white);
+  padding:10px 16px; border-radius:var(--radius-sm);
+  transition: top .2s;
+}
+.skip-link:focus{ top:20px; }
+
+:focus-visible{
+  outline: 2px solid var(--flame);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  height:84px;
+  background: rgba(242,239,229,.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom:1px solid var(--line-strong);
+}
+
+.nav{
+  height:84px;
+  display:flex; align-items:center; gap:28px;
+}
+
+.brand{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
+
+.brand-mark{ width:38px; height:38px; color:var(--ink); flex-shrink:0; }
+.brand-mark svg{ width:100%; height:100%; }
+
+.brand strong{
+  display:block;
+  font-family:"Fraunces", serif;
+  font-weight:600;
+  font-size:1.32rem;
+  line-height:1.1;
+  letter-spacing:-.01em;
+  color:var(--ink);
+}
+.brand small{
+  display:block; margin-top:2px;
+  font-family:"IBM Plex Mono", monospace;
+  color:var(--muted);
+  font-size:.66rem;
+  letter-spacing:.03em;
+}
+
+.menu{
+  display:flex; align-items:center; gap:30px;
+  margin-left:auto;
+  font-size:.87rem; font-weight:500;
+}
+.menu a{
+  position:relative; padding:6px 0; color:var(--ink-soft);
+  transition: color var(--ease);
+}
+.menu a::after{
+  content:""; position:absolute; left:0; right:0; bottom:1px;
+  height:6px;
+  background: var(--flame-tint);
+  z-index:-1;
+  transform: scaleX(0);
+  transform-origin:left;
+  transition: transform var(--ease);
+}
+.menu a:hover{ color:var(--ink); }
+.menu a:hover::after{ transform:scaleX(1); }
+
+.menu-toggle{
+  display:none; margin-left:auto;
+  width:44px; height:44px;
+  border:1px solid var(--line-strong); border-radius:var(--radius-sm);
+  background:var(--white); color:var(--ink);
+  font-size:1.2rem;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.button{
+  min-height:48px;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:12px 22px;
+  border-radius: var(--radius-sm);
+  border:1px solid transparent;
+  font-size:.86rem; font-weight:600;
+  transition: transform var(--ease), box-shadow var(--ease), background var(--ease), border-color var(--ease), color var(--ease);
+}
+
+.button-primary{
+  background: var(--flame);
+  color: var(--white);
+  box-shadow: 0 3px 0 var(--flame-dark);
+}
+.button-primary:hover{ background:var(--flame-dark); transform: translateY(2px); box-shadow:0 1px 0 var(--flame-dark); }
+
+.button-secondary{
+  background:transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.button-secondary:hover{ background:var(--ink); color:var(--white); }
+
+.button-dark{
+  background:var(--ink); color:var(--white);
+}
+.button-dark:hover{ background:#0c1922; }
+
+.button-small{ min-height:42px; padding:9px 16px; font-size:.78rem; }
+
+.button svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; }
+.button svg path:first-child{ fill:currentColor; stroke:none; }
+
+/* =========================================================
+   TYPE / SECTION SCAFFOLDING
+   ========================================================= */
+
+.tag{
+  display:inline-flex; align-items:center; gap:8px;
+  margin:0;
+  font-family:"IBM Plex Mono", monospace;
+  color:var(--copper);
+  font-size:.78rem;
+  font-weight:500;
+}
+.tag::before{
+  content:"";
+  width:7px; height:7px;
+  background:var(--flame);
+  border-radius:1px;
+}
+
+.section{ padding:120px 0; position:relative; }
+
+.section-heading{ margin-bottom:60px; max-width:640px; }
+.section-heading.centered{ margin-inline:auto; text-align:center; }
+
+.section-heading h2,
+.section-intro h2,
+.exam-copy h2,
+.location-layout h2,
+.contact-intro h2{
+  margin:14px 0 0;
+  color:var(--ink);
+  font-family:"Fraunces", serif;
+  font-weight:600;
+  font-size:clamp(2.1rem, 3.6vw, 3.4rem);
+  line-height:1.08;
+  letter-spacing:-.015em;
+}
+.section-heading h2 em,
+.exam-copy h2 em,
+.location-layout h2 em,
+.contact-intro h2 em{
+  font-style:italic;
+  font-weight:500;
+  color: var(--flame);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-bottom:1px solid var(--line-strong);
+}
+
+.hero-grid{
+  position:relative; z-index:2;
+  min-height:660px;
+  display:grid;
+  grid-template-columns: minmax(0,1.05fr) minmax(400px, .95fr);
+  align-items:center;
+  gap:70px;
+  padding-top:60px; padding-bottom:60px;
+}
+
+.hero-copy{ max-width:600px; }
+
+.hero-tag{
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:24px;
+  font-family:"IBM Plex Mono", monospace;
+  color:var(--copper);
+  font-size:.78rem;
+}
+.hero-tag span{ width:26px; height:1px; background:var(--flame); }
+
+.hero h1{
+  margin:0;
+  color:var(--ink);
+  font-family:"Fraunces", serif;
+  font-weight:600;
+  font-size:clamp(2.9rem, 5.4vw, 4.7rem);
+  line-height:1.02;
+  letter-spacing:-.02em;
+}
+.hero h1 em{
+  font-style:italic;
+  font-weight:500;
+  color:var(--flame);
+}
+
+.hero-subtitle{
+  max-width:480px;
+  margin:28px 0 34px;
+  color:var(--ink-soft);
+  font-size:1.05rem;
+  line-height:1.75;
+}
+.hero-subtitle strong{ color:var(--ink); font-weight:600; }
+
+.hero-actions{ display:flex; flex-wrap:wrap; gap:12px; }
+
+.trust-row{
+  display:flex; gap:0;
+  margin-top:48px;
+  border-top:1px solid var(--line-strong);
+}
+.trust-row div{
+  flex:1;
+  padding:20px 20px 0 0;
+  border-right:1px solid var(--line);
+}
+.trust-row div:last-child{ border-right:0; }
+.trust-row strong{
+  display:block;
+  font-family:"Fraunces", serif;
+  font-weight:600;
+  color:var(--ink);
+  font-size:1.5rem;
+  letter-spacing:-.02em;
+}
+.trust-row span{
+  display:block; margin-top:4px;
+  color:var(--muted);
+  font-size:.74rem;
+  line-height:1.4;
+}
+
+/* Hero visual: a lab notebook page with hand-drawn diagrams */
+
+.hero-visual{
+  position:relative;
+  height:520px;
+}
+
+.notebook-page{
+  position:absolute; inset:0;
+  background:
+    repeating-linear-gradient(var(--grid-line) 0 1px, transparent 1px 34px),
+    var(--white);
+  border:1px solid var(--line-strong);
+  border-radius:2px;
+  box-shadow: var(--shadow-card);
+  overflow:hidden;
+}
+
+.notebook-page::before{
+  content:"";
+  position:absolute; left:46px; top:0; bottom:0; width:1px;
+  background: rgba(217,79,43,.28);
+  pointer-events:none;
+}
+
+.notebook-inner{
+  position:relative;
+  z-index:1;
+  padding: 32px 30px 30px 66px;
+}
+
+.notebook-caption{
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.68rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.notebook-diagram{ width:100%; height:auto; }
+
+/* Diagram line/fill helpers — shared by every hand-drawn SVG on the
+   page (hero notebook, modality illustrations, exam graph) */
+.ink{ stroke:var(--ink); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.flame{ stroke:var(--flame); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.copper{ stroke:var(--copper); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.fill-copper{ fill:var(--copper); stroke:none; }
+.fill-flame{ fill:var(--flame); stroke:none; }
+svg text{
+  font-family:"IBM Plex Mono", monospace;
+  fill: var(--ink-soft);
+}
+
+.notebook-photo{
+  margin:0;
+  border:1px solid var(--line-strong);
+  overflow:hidden;
+  aspect-ratio: 16 / 10;
+}
+.notebook-photo img{
+  width:100%; height:100%; object-fit:cover;
+  filter: grayscale(.4) sepia(.08) contrast(1.05);
+}
+.notebook-photo-wide{ aspect-ratio: 16 / 7; }
+
+.hero-badge{
+  position:absolute; z-index:5;
+  right:-18px; top:-18px;
+  width:100px; height:100px;
+  display:grid; place-items:center;
+  background: var(--ink);
+  color: var(--white);
+  border-radius:50%;
+  text-align:center;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.62rem;
+  line-height:1.35;
+  transform: rotate(8deg);
+  box-shadow: var(--shadow-card);
+}
+.hero-badge strong{
+  display:block;
+  font-family:"Fraunces", serif;
+  font-size:1.5rem;
+  font-weight:600;
+}
+
+/* =========================================================
+   SECTION INTRO (used by sobre / servicos)
+   ========================================================= */
+
+.section-intro{
+  display:grid;
+  grid-template-columns: var(--margin-col) 1fr;
+  gap:24px;
+  margin-bottom:70px;
+}
+.section-intro > div:first-child{ padding-top:10px; }
+
+.section-number{
+  display:block;
+  font-family:"IBM Plex Mono", monospace;
+  color: var(--muted);
+  font-size:.78rem;
+}
+
+.section-intro h2{ max-width:760px; }
+
+.section-intro.light .tag{ color:#8fd4c5; }
+.section-intro.light .tag::before{ background: var(--flame); }
+.section-intro.light .section-number{ color: rgba(255,255,255,.4); }
+.section-intro.light h2{ color:var(--white); }
+.section-intro.light h2 em{ color:#ff9a76; }
+
+/* =========================================================
+   SOBRE
+   ========================================================= */
+
+.about-layout{
+  display:grid;
+  grid-template-columns: var(--margin-col) 1.05fr .95fr;
+  gap:40px;
+  align-items:start;
+}
+
+.about-main{ max-width:640px; }
+
+.about-main p{ margin:0 0 19px; color:var(--ink-soft); font-size:.96rem; }
+
+.about-main .large-text{
+  margin-bottom:26px;
+  color:var(--ink);
+  font-family:"Fraunces", serif;
+  font-weight:500;
+  font-size:1.5rem;
+  line-height:1.5;
+  letter-spacing:-.01em;
+}
+.about-main strong{ color:var(--ink); font-weight:600; }
+
+.about-cards{ display:grid; gap:1px; background:var(--line-strong); border:1px solid var(--line-strong); }
+
+.info-card{
+  position:relative;
+  padding:28px;
+  background: var(--white);
+}
+
+.card-icon{
+  width:40px; height:40px;
+  display:grid; place-items:center;
+  margin-bottom:20px;
+  color: var(--flame);
+  border:1px solid var(--line-strong);
+  border-radius:50%;
+}
+.card-icon.green{ color: var(--copper); }
+.card-icon svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+
+.card-label{
+  display:block; margin-bottom:6px;
+  font-family:"IBM Plex Mono", monospace;
+  color:var(--muted);
+  font-size:.68rem;
+}
+
+.info-card h3{ margin:0 0 8px; color:var(--ink); font-size:1.1rem; font-weight:600; letter-spacing:-.01em; }
+.info-card p{ margin:0; color:var(--muted); font-size:.8rem; line-height:1.6; }
+
+/* =========================================================
+   SERVIÇOS (dark)
+   ========================================================= */
+
+.section-dark{
+  position:relative;
+  background: var(--ink);
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:34px 34px;
+  color:var(--white);
+}
+.section-dark .container{ position:relative; z-index:2; }
+.section-dark.ruled::before{ background: rgba(255,255,255,.16); }
+
+.year-grid{
+  display:grid;
+  grid-template-columns: var(--margin-col) repeat(3,1fr);
+  gap: 0 1px;
+  background: rgba(255,255,255,.14);
+  border-top:1px solid rgba(255,255,255,.14);
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+.year-grid > div:first-child{ background:transparent; }
+
+.year-card{
+  position:relative;
+  min-height:230px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:30px 26px;
+  background: var(--ink);
+}
+
+.year{
+  font-family:"Fraunces", serif;
+  color: rgba(255,255,255,.3);
+  font-weight:600;
+  font-size:2.6rem;
+  line-height:1;
+}
+.year-card h3{ margin:22px 0 6px; font-size:1.15rem; font-weight:600; letter-spacing:-.01em; }
+.year-card p{ max-width:260px; margin:0; color:#a9b6bd; font-size:.78rem; line-height:1.6; }
+
+.method-row{
+  display:grid;
+  grid-template-columns: var(--margin-col) repeat(3,1fr);
+  margin-top:0;
+}
+.method-row > div{ padding:26px 26px 0 0; }
+.method-row > div:first-child{ padding:0; }
+
+.method-number{
+  display:block; margin-bottom:12px;
+  font-family:"IBM Plex Mono", monospace;
+  color:#8fd4c5;
+  font-size:.72rem;
+}
+.method-row strong{ display:block; font-size:1.02rem; font-weight:600; }
+.method-row p{ max-width:250px; margin:6px 0 0; color:#9aabba; font-size:.76rem; }
+
+/* =========================================================
+   MODALIDADES
+   ========================================================= */
+
+.modality-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:1px;
+  background: var(--line-strong);
+  border:1px solid var(--line-strong);
+}
+
+.modality-card{
+  background: var(--white);
+  padding:44px 40px;
+  display:flex; flex-direction:column;
+}
+
+.modality-illustration{
+  width:100%; height:200px;
+  margin-bottom:28px;
+  border:1px solid var(--line);
+  background:
+    repeating-linear-gradient(var(--white) 0 33px, var(--grid-line) 33px 34px);
+  display:grid; place-items:center;
+}
+.modality-illustration svg{ width:70%; height:70%; }
+
+.modality-top{
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:16px;
+}
+.modality-icon{
+  width:34px; height:34px;
+  display:grid; place-items:center;
+  border:1px solid var(--flame);
+  color: var(--flame);
+  border-radius:50%;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.7rem; font-weight:600;
+}
+.modality-icon.blue{ border-color:var(--copper); color:var(--copper); }
+
+.modality-top span:last-child{
+  font-family:"IBM Plex Mono", monospace;
+  color:var(--muted);
+  font-size:.72rem;
+}
+
+.modality-content h3{
+  margin:0 0 10px;
+  color:var(--ink);
+  font-family:"Fraunces", serif;
+  font-weight:600;
+  font-size:1.6rem;
+  letter-spacing:-.015em;
+}
+.modality-content > p{ margin:0; color:var(--ink-soft); font-size:.86rem; line-height:1.65; }
+
+.modality-content ul{
+  display:grid; gap:9px;
+  margin:24px 0 0; padding:20px 0 0;
+  border-top:1px solid var(--line);
+  list-style:none;
+}
+.modality-content li{
+  position:relative; padding-left:20px;
+  color:var(--ink-soft);
+  font-size:.82rem;
+}
+.modality-content li::before{
+  content:"";
+  position:absolute; left:0; top:.55em;
+  width:8px; height:1px;
+  background: var(--flame);
+}
+
+/* =========================================================
+   PREÇOS — tabela de laboratório
+   ========================================================= */
+
+.pricing-section{ background: var(--paper-2); }
+
+.section-description{ margin:14px 0 0; color:var(--muted); font-size:.88rem; max-width:520px; }
+.section-heading.centered .section-description{ margin-inline:auto; }
+
+.price-table{
+  border-top:1px solid var(--line-strong);
+}
+
+.price-row{
+  display:grid;
+  grid-template-columns: 1.4fr .8fr 1.1fr 1.7fr auto;
+  align-items:center;
+  gap:24px;
+  padding:26px 4px;
+  border-bottom:1px solid var(--line-strong);
+}
+
+.price-row.featured{
+  background: var(--white);
+  box-shadow: inset 3px 0 0 var(--flame);
+  padding-left:20px;
+}
+
+.price-row-label{
+  font-family:"IBM Plex Mono", monospace;
+  color:var(--muted);
+  font-size:.72rem;
+}
+
+.price-row h3{ margin:0; color:var(--ink); font-family:"Fraunces", serif; font-weight:600; font-size:1.15rem; }
+
+.price-value{ display:flex; align-items:baseline; gap:5px; }
+.price-value strong{ font-family:"Fraunces", serif; font-weight:600; color:var(--ink); font-size:1.9rem; letter-spacing:-.02em; }
+.price-value span{ color:var(--muted); font-size:.72rem; }
+
+.price-row p{ margin:0; color:var(--ink-soft); font-size:.82rem; line-height:1.55; }
+
+.price-row .button{ justify-self:end; }
+
+/* =========================================================
+   EXAMES
+   ========================================================= */
+
+.exam-section{ background: var(--paper); }
+
+.exam-layout{
+  display:grid;
+  grid-template-columns: var(--margin-col) 1fr .95fr;
+  align-items:start;
+  gap:50px;
+}
+
+.exam-copy{ max-width:560px; }
+
+.exam-lead{ margin:24px 0 34px; color:var(--ink-soft); font-size:.92rem; line-height:1.7; }
+
+.exam-list{ display:grid; gap:0; border-top:1px solid var(--line-strong); }
+.exam-list > div{
+  display:grid; grid-template-columns:42px 1fr;
+  padding:18px 0;
+  border-bottom:1px solid var(--line-strong);
+}
+.exam-list span{ font-family:"IBM Plex Mono", monospace; color:var(--flame); font-size:.74rem; }
+.exam-list strong{ color:var(--ink); font-size:.85rem; font-weight:600; }
+.exam-list p{ grid-column:2; margin:4px 0 0; color:var(--muted); font-size:.76rem; }
+
+.exam-visual{
+  position:relative;
+  height:520px;
+  background: var(--white);
+  border:1px solid var(--line-strong);
+  overflow:hidden;
+}
+.exam-visual::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(var(--white) 0 33px, var(--grid-line) 33px 34px);
+}
+.exam-visual-inner{
+  position:absolute; inset:0;
+  padding:36px;
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+.exam-visual-caption{ font-family:"IBM Plex Mono", monospace; font-size:.7rem; color:var(--muted); }
+
+.exam-photo{
+  margin:0;
+  border:1px solid var(--line-strong);
+  overflow:hidden;
+  aspect-ratio: 16 / 9;
+}
+.exam-photo img{
+  width:100%; height:100%; object-fit:cover;
+  filter: grayscale(.4) sepia(.08) contrast(1.05);
+}
+
+.exam-badge{
+  align-self:flex-start;
+  display:flex; align-items:center; gap:14px;
+  padding:14px 18px;
+  background: var(--ink);
+  color:var(--white);
+}
+.exam-badge span{
+  width:38px; height:38px;
+  display:grid; place-items:center;
+  background: var(--flame);
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.62rem; font-weight:600;
+}
+.exam-badge strong{ font-size:.78rem; line-height:1.35; font-weight:500; }
+
+/* =========================================================
+   LOCALIZAÇÃO
+   ========================================================= */
+
+.location-section{ background: var(--paper-2); }
+
+.location-layout{
+  display:grid;
+  grid-template-columns: var(--margin-col) .78fr 1.22fr;
+  align-items:center;
+  gap:50px;
+}
+.location-layout p{ color:var(--ink-soft); font-size:.9rem; }
+.location-layout .muted{ margin-top:16px; font-size:.76rem; color:var(--muted); }
+.location-layout .button{ margin-top:20px; }
+
+.map-wrap{
+  height:440px;
+  border:1px solid var(--line-strong);
+  filter: grayscale(.25) contrast(1.02);
+}
+.map-wrap iframe{ width:100%; height:100%; display:block; border:0; }
+
+/* =========================================================
+   CONTACTO
+   ========================================================= */
+
+.contact-section{ background: var(--paper); }
+
+.contact-layout{
+  display:grid;
+  grid-template-columns: var(--margin-col) .82fr 1.18fr;
+  align-items:start;
+  gap:60px;
+}
+
+.contact-intro{ max-width:480px; }
+.contact-intro > p:not(.tag){ margin:24px 0 0; color:var(--ink-soft); font-size:.9rem; }
+
+.contact-methods{ display:grid; gap:0; margin-top:36px; border-top:1px solid var(--line-strong); }
+.contact-methods a{
+  display:flex; align-items:center; gap:14px;
+  padding:16px 0;
+  border-bottom:1px solid var(--line-strong);
+  transition: gap var(--ease);
+}
+.contact-methods a:hover{ gap:20px; }
+
+.contact-icon{
+  width:40px; height:40px;
+  display:grid; place-items:center;
+  border:1px solid var(--flame); color:var(--flame);
+  border-radius:50%;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.68rem; font-weight:600;
+}
+.contact-icon.email{ border-color:var(--copper); color:var(--copper); }
+
+.contact-methods small{ display:block; font-family:"IBM Plex Mono", monospace; color:var(--muted); font-size:.66rem; }
+.contact-methods strong{ display:block; margin-top:2px; color:var(--ink); font-size:.88rem; font-weight:600; }
+
+.contact-form{
+  padding:40px;
+  background: var(--white);
+  border:1px solid var(--line-strong);
+}
+
+.form-header{ margin-bottom:26px; padding-bottom:20px; border-bottom:1px solid var(--line-strong); }
+.form-header span{ font-family:"IBM Plex Mono", monospace; color:var(--copper); font-size:.72rem; }
+.form-header h3{ margin:6px 0 0; color:var(--ink); font-family:"Fraunces", serif; font-weight:600; font-size:1.5rem; }
+
+.contact-form label{ display:block; margin:14px 0; color:var(--ink-soft); font-size:.78rem; font-weight:500; }
+.contact-form label > span{ color:var(--muted); font-weight:400; }
+
+input,select,textarea{
+  width:100%; margin-top:7px; padding:12px 14px;
+  background: var(--paper);
+  color:var(--ink);
+  border:1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  outline:none;
+  font-size:.85rem;
+  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+}
+input::placeholder,textarea::placeholder{ color:var(--muted); }
+input:focus,select:focus,textarea:focus{
+  background:var(--white);
+  border-color:var(--flame);
+  box-shadow: 0 0 0 3px var(--flame-tint);
+}
+textarea{ resize:vertical; min-height:110px; }
+
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+.contact-form button{ width:100%; margin-top:10px; }
+
+.form-note{ margin:12px 0 0; color:var(--muted); font-size:.68rem; text-align:center; }
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+  padding:70px 0 26px;
+  background: var(--ink);
+  color:#c9d3d9;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:34px 34px;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns: var(--margin-col) 1fr .7fr .9fr;
+  gap:40px;
+}
+.footer-grid > div:first-child{ background:transparent; }
+
+.footer-brand{ color:var(--white); }
+.footer-brand .brand-mark{ color:#8fd4c5; }
+.footer-brand small{ color:#8fa0ac; }
+
+.footer-main p{ max-width:320px; margin:20px 0 0; color:#8fa0ac; font-size:.78rem; line-height:1.6; }
+
+.footer-column{ display:flex; flex-direction:column; gap:10px; font-size:.8rem; }
+.footer-column strong{ margin-bottom:6px; color:var(--white); font-size:.78rem; font-weight:600; }
+.footer-column a,.footer-column span{ color:#9fb0ba; transition:color var(--ease); }
+.footer-column a:hover{ color:var(--white); }
+
+.copyright{
+  display:flex; gap:10px;
+  margin-top:56px; padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.12);
+  color:#71889b;
+  font-family:"IBM Plex Mono", monospace;
+  font-size:.68rem;
+}
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width:1080px){
+  .container{ width:min(var(--container), calc(100% - 40px)); }
+  .menu{ gap:18px; }
+
+  .hero-grid{ grid-template-columns:1fr .9fr; gap:44px; }
+  .hero-visual{ height:460px; }
+
+  .about-layout{ grid-template-columns:1fr 1fr; gap:44px; }
+  .about-layout > div:first-child{ display:none; }
+
+  .section-intro{ grid-template-columns:1fr; gap:10px; }
+  .section-intro > div:first-child{ padding-top:0; }
+
+  .year-grid,.method-row{ grid-template-columns:repeat(3,1fr); }
+  .year-grid > div:first-child,.method-row > div:first-child{ display:none; }
+
+  .exam-layout{ grid-template-columns:1fr .95fr; gap:44px; }
+  .exam-layout > div:first-child{ display:none; }
+
+  .location-layout{ grid-template-columns:.8fr 1.2fr; gap:44px; }
+  .location-layout > div:first-child.margin-col{ display:none; }
+
+  .contact-layout{ grid-template-columns:.85fr 1.15fr; gap:44px; }
+
+  .price-row{ grid-template-columns:1.3fr .9fr 1.2fr; }
+  .price-row p,.price-row .button{ display:none; }
+
+  .footer-grid{ grid-template-columns:1.4fr .7fr .9fr; }
+  .footer-grid > div:first-child.margin-col{ display:none; }
+}
+
+/* =========================================================
+   RESPONSIVE — 900px
+   ========================================================= */
+
+@media (max-width:900px){
+  .site-header,.nav{ height:72px; }
+  .nav{ gap:14px; }
+  .nav > .button-small{ display:none; }
+  .menu-toggle{ display:grid; place-items:center; }
+
+  .menu{
+    display:none;
+    position:absolute; left:0; right:0; top:72px;
+    margin:0; padding:12px 24px 20px;
+    flex-direction:column; align-items:stretch; gap:0;
+    background:var(--white);
+    border-bottom:1px solid var(--line-strong);
   }
-  </script>
+  .menu.open{ display:flex; }
+  .menu a{ padding:14px 0; border-bottom:1px solid var(--line); }
+  .menu a:last-child{ border-bottom:0; }
+  .menu a::after{ display:none; }
 
-</head>
-<body>
+  .hero-grid{ grid-template-columns:1fr; min-height:auto; padding-top:60px; padding-bottom:60px; }
+  .hero-copy{ max-width:640px; }
+  .hero-visual{ max-width:600px; width:100%; height:420px; }
 
-<a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+  .section{ padding:80px 0; }
+  .section-heading{ margin-bottom:40px; }
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+  .about-layout{ grid-template-columns:1fr; }
+  .about-cards{ grid-template-columns:1fr 1fr; }
 
-<header class="site-header">
-  <div class="container nav">
+  .year-grid{ grid-template-columns:1fr 1fr; }
+  .year-card:last-child{ grid-column:1 / -1; }
+  .method-row{ grid-template-columns:1fr; }
+  .method-row > div{ padding:22px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+  .method-row > div:last-child{ border-bottom:0; }
 
-    <a href="#inicio" class="brand" aria-label="Explica FQA - início">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 38 38" fill="none">
-          <path d="M19 3 L34 28 L4 28 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-          <circle cx="19" cy="19" r="3.2" fill="currentColor"/>
-          <circle cx="19" cy="3" r="2" fill="currentColor"/>
-          <circle cx="34" cy="28" r="2" fill="currentColor"/>
-          <circle cx="4" cy="28" r="2" fill="currentColor"/>
-        </svg>
-      </span>
-      <span>
-        <strong>Explica FQA</strong>
-        <small>Física e Química A</small>
-      </span>
-    </a>
+  .modality-grid{ grid-template-columns:1fr; }
 
-    <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+  .exam-layout{ grid-template-columns:1fr; }
+  .exam-visual{ max-width:640px; height:400px; }
 
-    <nav id="main-menu" class="menu" aria-label="Navegação principal">
-      <a href="#sobre">Sobre</a>
-      <a href="#servicos">Explicações</a>
-      <a href="#modalidades">Modalidades</a>
-      <a href="#precos">Preços</a>
-      <a href="#exames">Exames</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
+  .location-layout{ grid-template-columns:1fr; gap:36px; }
+  .map-wrap{ height:360px; }
 
-    <a class="button button-small button-dark"
-       href="https://wa.me/351933368652?text=Ol%C3%A1%21%20Gostaria%20de%20obter%20mais%20informa%C3%A7%C3%B5es%20sobre%20as%20explica%C3%A7%C3%B5es%20de%20F%C3%ADsica%20e%20Qu%C3%ADmica%20A."
-       target="_blank" rel="noopener">
-      WhatsApp
-    </a>
+  .contact-layout{ grid-template-columns:1fr; gap:44px; }
 
-  </div>
-</header>
+  .price-row{ grid-template-columns:1fr auto; }
+  .price-row-label{ display:none; }
 
-<main id="conteudo">
+  .footer-grid{ grid-template-columns:1fr 1fr; gap:40px; }
+  .footer-main{ grid-column:1 / -1; }
+}
 
-<!-- =====================================================
-     HERO
-===================================================== -->
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
 
-<section class="hero" id="inicio">
-  <div class="hero-grid container">
+@media (max-width:620px){
+  .container{ width:calc(100% - 32px); }
 
-    <div class="hero-copy">
+  .brand-mark{ width:32px; height:32px; }
+  .brand strong{ font-size:1.1rem; }
 
-      <div class="hero-tag">
-        <span></span>
-        10.º ao 12.º ano — Guimarães — online
-      </div>
+  .hero-grid{ padding-top:48px; padding-bottom:48px; gap:36px; }
+  .hero h1{ font-size:clamp(2.5rem, 11vw, 3.4rem); }
+  .hero-subtitle{ margin:22px 0 26px; font-size:.94rem; }
+  .hero-actions{ flex-direction:column; }
+  .hero-actions .button{ width:100%; }
 
-      <h1>Perceber a lógica.<br><em>Não decorar a fórmula.</em></h1>
+  .trust-row{ flex-wrap:wrap; }
+  .trust-row div{ flex:1 1 40%; padding-bottom:16px; }
 
-      <p class="hero-subtitle">
-        Explicações de <strong>Física e Química A</strong> com
-        acompanhamento personalizado, foco na compreensão
-        e preparação estruturada para testes e exames nacionais.
-      </p>
+  .hero-visual{ height:340px; }
+  .hero-badge{ width:76px; height:76px; font-size:.55rem; right:-10px; top:-10px; }
+  .hero-badge strong{ font-size:1.1rem; }
 
-      <div class="hero-actions">
-        <a class="button button-primary"
-           href="https://wa.me/351933368652?text=Ol%C3%A1%21%20Gostaria%20de%20obter%20mais%20informa%C3%A7%C3%B5es%20sobre%20as%20explica%C3%A7%C3%B5es%20de%20F%C3%ADsica%20e%20Qu%C3%ADmica%20A."
-           target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.4-4.7A8.5 8.5 0 1 1 20.5 11.8Z"/>
-            <path d="M8.2 8.1c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.6.7c.5 1 1.2 1.7 2.2 2.2l.7-.6c.2-.2.4-.2.6-.1l1.7.7c.3.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.4.2-1.1.4-1.5.3-2.5-.5-4.6-2.5-5.1-5.1-.1-.4.1-1.1.3-1.5Z"/>
-          </svg>
-          Falar pelo WhatsApp
-        </a>
-        <a class="button button-secondary" href="#contacto">Pedir informações</a>
-      </div>
+  .section{ padding:64px 0; }
+  .section-heading{ margin-bottom:32px; }
 
-      <div class="trust-row">
-        <div>
-          <strong>20+</strong>
-          <span>anos de experiência</span>
-        </div>
-        <div>
-          <strong>17 val.</strong>
-          <span>classificação na licenciatura</span>
-        </div>
-        <div>
-          <strong>10.º–12.º</strong>
-          <span>ano de escolaridade</span>
-        </div>
-      </div>
+  .about-cards{ grid-template-columns:1fr; }
 
-    </div>
+  .year-grid{ grid-template-columns:1fr; }
+  .year-card,.year-card:last-child{ grid-column:auto; min-height:auto; }
 
+  .modality-card{ padding:30px 24px; }
 
-    <div class="hero-visual">
+  .price-row{ padding:20px 4px; }
+  .price-row.featured{ padding-left:16px; }
 
-      <div class="notebook-page">
-        <div class="notebook-inner">
+  .exam-visual{ height:300px; }
 
-          <p class="notebook-caption">exercício — plano inclinado</p>
+  .contact-form{ padding:24px 20px; }
+  .form-row{ grid-template-columns:1fr; gap:0; }
 
-          <figure class="notebook-photo">
-            <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=900&q=80"
-                 alt="Material científico de laboratório usado no estudo da Física">
-          </figure>
+  .footer-grid{ grid-template-columns:1fr; gap:32px; }
 
-          <p class="notebook-caption" style="margin-top:20px;">reação — combustão</p>
+  .copyright{ flex-wrap:wrap; margin-top:36px; }
+}
 
-          <figure class="notebook-photo notebook-photo-wide">
-            <img src="https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=900&q=80"
-                 alt="Equações químicas escritas num quadro">
-          </figure>
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
 
-        </div>
-      </div>
-
-      <div class="hero-badge">
-        <strong>FQA</strong>
-        exame nacional
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     SOBRE
-===================================================== -->
-
-<section class="section ruled" id="sobre">
-  <div class="container">
-
-    <div class="section-intro">
-      <div><p class="tag">Sobre</p></div>
-      <div>
-        <h2>Conhecimento científico,<br><em>explicado com método.</em></h2>
-      </div>
-    </div>
-
-    <div class="about-layout">
-      <div></div>
-
-      <div class="about-main">
-
-        <p class="large-text">
-          A Física e a Química podem ser exigentes. O trabalho nas
-          explicações é tornar os conteúdos mais claros, estruturados
-          e compreensíveis — não substituir a compreensão por repetição.
-        </p>
-
-        <p>
-          Licenciatura em <strong>Ensino da Física e da Química</strong>
-          pela Faculdade de Ciências da Universidade do Porto, concluída
-          em 2007, com classificação final de <strong>17 valores</strong>.
-        </p>
-
-        <p>
-          Mais de <strong>20 anos de experiência</strong> em explicações
-          e preparação de alunos para testes, provas e exames nacionais.
-        </p>
-
-        <p>
-          O trabalho é adaptado ao nível e às necessidades de cada aluno,
-          privilegiando a compreensão dos conceitos, a resolução de
-          problemas e a construção de métodos de estudo eficazes.
-        </p>
-
-      </div>
-
-      <div class="about-cards">
-
-        <article class="info-card">
-          <span class="card-icon">
-            <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 0-2-2Z"/><path d="M4 17h14"/><path d="M8 7h6M8 11h6"/></svg>
-          </span>
-          <span class="card-label">Formação</span>
-          <h3>Ensino da Física e da Química</h3>
-          <p>Faculdade de Ciências da Universidade do Porto, 2007 — 17 valores.</p>
-        </article>
-
-        <article class="info-card">
-          <span class="card-icon green">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
-          </span>
-          <span class="card-label">Experiência</span>
-          <h3>Mais de 20 anos</h3>
-          <p>Acompanhamento de alunos e preparação para avaliações.</p>
-        </article>
-
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     SERVIÇOS
-===================================================== -->
-
-<section class="section section-dark ruled" id="servicos">
-  <div class="container">
-
-    <div class="section-intro light">
-      <div><p class="tag">Explicações</p></div>
-      <div>
-        <h2>Um acompanhamento<br><em>adaptado a cada ano.</em></h2>
-      </div>
-    </div>
-
-    <div class="year-grid">
-      <div></div>
-
-      <article class="year-card">
-        <span class="year">10.º</span>
-        <div>
-          <h3>10.º ano</h3>
-          <p>Construção de bases sólidas e compreensão dos conceitos fundamentais.</p>
-        </div>
-      </article>
-
-      <article class="year-card">
-        <span class="year">11.º</span>
-        <div>
-          <h3>11.º ano</h3>
-          <p>Consolidação dos conteúdos e desenvolvimento da capacidade de resolução de problemas.</p>
-        </div>
-      </article>
-
-      <article class="year-card">
-        <span class="year">12.º</span>
-        <div>
-          <h3>12.º ano</h3>
-          <p>Preparação orientada para avaliações e objetivos de acesso ao ensino superior.</p>
-        </div>
-      </article>
-    </div>
-
-    <div class="method-row">
-      <div></div>
-
-      <div>
-        <span class="method-number">passo 1</span>
-        <strong>Compreender</strong>
-        <p>Explicar os conceitos de forma clara.</p>
-      </div>
-
-      <div>
-        <span class="method-number">passo 2</span>
-        <strong>Praticar</strong>
-        <p>Aplicar os conhecimentos na resolução de exercícios.</p>
-      </div>
-
-      <div>
-        <span class="method-number">passo 3</span>
-        <strong>Evoluir</strong>
-        <p>Desenvolver autonomia e confiança.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     MODALIDADES
-===================================================== -->
-
-<section class="section" id="modalidades">
-  <div class="container">
-
-    <div class="section-heading centered">
-      <p class="tag" style="justify-content:center;">Modalidades</p>
-      <h2>Presencial ou online.<br><em>O mesmo acompanhamento.</em></h2>
-    </div>
-
-    <div class="modality-grid">
-
-      <article class="modality-card">
-
-        <div class="modality-illustration">
-          <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
-            <rect x="20" y="20" width="120" height="80" class="ink" rx="1"/>
-            <line x1="20" y1="38" x2="140" y2="38" class="ink"/>
-            <circle cx="30" cy="29" r="2.4" class="fill-flame"/>
-            <circle cx="40" cy="29" r="2.4" class="ink" fill="none"/>
-            <line x1="45" y1="55" x2="95" y2="55" class="copper"/>
-            <line x1="45" y1="67" x2="115" y2="67" class="ink"/>
-            <line x1="45" y1="79" x2="80" y2="79" class="ink"/>
-          </svg>
-        </div>
-
-        <div class="modality-content">
-
-          <div class="modality-top">
-            <span class="modality-icon">P</span>
-            <span>presencial</span>
-          </div>
-
-          <h3>Presencial</h3>
-
-          <p>
-            Explicações em Guimarães, na zona de Fermentões,
-            num ambiente preparado para o estudo e concentração.
-          </p>
-
-          <ul>
-            <li>Acompanhamento individual</li>
-            <li>Pequenos grupos</li>
-            <li>Ambiente calmo de trabalho</li>
-            <li>Zona de Fermentões</li>
-          </ul>
-
-        </div>
-
-      </article>
-
-
-      <article class="modality-card">
-
-        <div class="modality-illustration">
-          <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
-            <rect x="35" y="18" width="90" height="64" class="ink" rx="1"/>
-            <rect x="42" y="24" width="76" height="46" class="copper"/>
-            <line x1="70" y1="90" x2="90" y2="90" class="ink"/>
-            <line x1="60" y1="98" x2="100" y2="98" class="ink"/>
-            <path d="M55 45 L70 55 L55 65" class="flame"/>
-            <line x1="76" y1="55" x2="100" y2="55" class="flame"/>
-          </svg>
-        </div>
-
-        <div class="modality-content">
-
-          <div class="modality-top">
-            <span class="modality-icon blue">O</span>
-            <span>online</span>
-          </div>
-
-          <h3>Online</h3>
-
-          <p>
-            Aulas à distância com ferramentas digitais, partilha
-            de ecrã e resolução de exercícios em tempo real.
-          </p>
-
-          <ul>
-            <li>Quadro digital</li>
-            <li>Partilha de ecrã</li>
-            <li>Horários flexíveis</li>
-            <li>A partir de qualquer local</li>
-          </ul>
-
-        </div>
-
-      </article>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     PREÇOS
-===================================================== -->
-
-<section class="section pricing-section" id="precos">
-  <div class="container">
-
-    <div class="section-heading centered">
-      <p class="tag" style="justify-content:center;">Preçário</p>
-      <h2>Preços simples.<br><em>Sem surpresas.</em></h2>
-      <p class="section-description">Grupos reduzidos para manter a qualidade do acompanhamento.</p>
-    </div>
-
-    <div class="price-table">
-
-      <div class="price-row">
-        <div>
-          <span class="price-row-label">individual</span>
-          <h3>Explicação individual</h3>
-        </div>
-        <div class="price-value"><strong>25 €</strong><span>/ hora</span></div>
-        <div></div>
-        <p>Acompanhamento totalmente personalizado, adaptado às necessidades do aluno.</p>
-        <a class="button button-secondary button-small" href="#contacto">Saber mais</a>
-      </div>
-
-      <div class="price-row featured">
-        <div>
-          <span class="price-row-label">mais procurado — 2 alunos</span>
-          <h3>Grupo de 2 alunos</h3>
-        </div>
-        <div class="price-value"><strong>15 €</strong><span>/ hora, por aluno</span></div>
-        <div></div>
-        <p>Dois alunos com acompanhamento próximo, mantendo uma dinâmica de trabalho eficaz.</p>
-        <a class="button button-primary button-small" href="#contacto">Saber mais</a>
-      </div>
-
-      <div class="price-row">
-        <div>
-          <span class="price-row-label">3 alunos</span>
-          <h3>Grupo de 3 alunos</h3>
-        </div>
-        <div class="price-value"><strong>12,50 €</strong><span>/ hora, por aluno</span></div>
-        <div></div>
-        <p>Uma opção económica mantendo um grupo suficientemente reduzido.</p>
-        <a class="button button-secondary button-small" href="#contacto">Saber mais</a>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     EXAMES
-===================================================== -->
-
-<section class="section exam-section ruled" id="exames">
-  <div class="container exam-layout">
-    <div></div>
-
-    <div class="exam-copy">
-
-      <p class="tag">Exame nacional</p>
-
-      <h2>Preparação com<br><em>objetivo definido.</em></h2>
-
-      <p class="exam-lead">
-        A preparação para o exame deve começar muito antes da época
-        de exames. O trabalho é estruturado ao longo do ano para
-        consolidar conhecimentos e ganhar confiança.
-      </p>
-
-      <div class="exam-list">
-        <div>
-          <span>1</span>
-          <strong>Revisão dos conteúdos</strong>
-          <p>Organização e consolidação da matéria.</p>
-        </div>
-        <div>
-          <span>2</span>
-          <strong>Resolução de exercícios</strong>
-          <p>Aplicação dos conceitos a diferentes problemas.</p>
-        </div>
-        <div>
-          <span>3</span>
-          <strong>Exames anteriores</strong>
-          <p>Contacto com o formato e exigências da prova.</p>
-        </div>
-        <div>
-          <span>4</span>
-          <strong>Estratégia de resolução</strong>
-          <p>Gestão do tempo e identificação das dificuldades.</p>
-        </div>
-      </div>
-
-    </div>
-
-
-    <div class="exam-visual">
-      <div class="exam-visual-inner">
-
-        <p class="exam-visual-caption">gráfico — energia potencial vs. tempo</p>
-
-        <figure class="exam-photo">
-          <img src="https://images.unsplash.com/photo-1527167151437-87cf28fb6b38?auto=format&fit=crop&w=900&q=80"
-               alt="Ecrã de osciloscópio a mostrar uma onda, associado à leitura de gráficos em Física">
-        </figure>
-
-        <div class="exam-badge">
-          <span>FQA</span>
-          <strong>Preparação para<br>o exame nacional</strong>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     LOCALIZAÇÃO
-===================================================== -->
-
-<section class="section location-section" id="localizacao">
-  <div class="container location-layout">
-    <div></div>
-
-    <div>
-      <p class="tag">Localização</p>
-      <h2>Explicações presenciais<br><em>em Guimarães.</em></h2>
-      <p>As explicações presenciais realizam-se na zona de <strong>Fermentões, Guimarães</strong>.</p>
-      <p class="muted">Por motivos de privacidade, a localização exata é facultada após confirmação da marcação.</p>
-      <a class="button button-secondary"
-         href="https://www.google.com/maps/search/?api=1&query=Junta+de+Freguesia+de+Ferment%C3%B5es+Guimar%C3%A3es"
-         target="_blank" rel="noopener">
-        Ver zona no mapa
-      </a>
-    </div>
-
-    <div class="map-wrap">
-      <iframe title="Mapa da zona de Fermentões, Guimarães"
-              src="https://www.google.com/maps?q=Junta%20de%20Freguesia%20de%20Ferment%C3%B5es%20Guimar%C3%A3es&output=embed"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-    </div>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     CONTACTO
-===================================================== -->
-
-<section class="section contact-section ruled" id="contacto">
-  <div class="container contact-layout">
-    <div></div>
-
-    <div class="contact-intro">
-
-      <p class="tag">Contacto</p>
-
-      <h2>Vamos começar?<br><em>Fale comigo.</em></h2>
-
-      <p>Indique o ano de escolaridade, a modalidade pretendida e, se possível, a sua disponibilidade.</p>
-
-      <div class="contact-methods">
-
-        <a href="https://wa.me/351933368652?text=Ol%C3%A1%21%20Gostaria%20de%20obter%20mais%20informa%C3%A7%C3%B5es%20sobre%20as%20explica%C3%A7%C3%B5es%20de%20F%C3%ADsica%20e%20Qu%C3%ADmica%20A."
-           target="_blank" rel="noopener">
-          <span class="contact-icon">W</span>
-          <span>
-            <small>whatsapp</small>
-            <strong>933 368 652</strong>
-          </span>
-        </a>
-
-        <a href="mailto:explica.fqa@gmail.com">
-          <span class="contact-icon email">✉</span>
-          <span>
-            <small>email</small>
-            <strong>explica.fqa@gmail.com</strong>
-          </span>
-        </a>
-
-      </div>
-
-    </div>
-
-
-    <form id="contact-form" class="contact-form" action="https://formsubmit.co/explica.fqa@gmail.com" method="POST">
-
-      <div class="form-header">
-        <span>contacto</span>
-        <h3>Peça informações</h3>
-      </div>
-
-      <!-- Configuração do envio direto (FormSubmit) -->
-      <input type="hidden" name="_subject" value="Novo pedido de informações — Explica FQA">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
-
-      <label>
-        Nome
-        <input name="nome" required autocomplete="name" placeholder="O seu nome">
-      </label>
-
-      <label>
-        Email
-        <input name="email" type="email" required autocomplete="email" placeholder="nome@email.com">
-      </label>
-
-      <label>
-        Telefone <span>(opcional)</span>
-        <input name="telefone" type="tel" autocomplete="tel" placeholder="933 000 000">
-      </label>
-
-      <div class="form-row">
-        <label>
-          Ano
-          <select name="ano" required>
-            <option value="">Seleccione...</option>
-            <option>10.º ano</option>
-            <option>11.º ano</option>
-            <option>12.º ano</option>
-            <option>Outro</option>
-          </select>
-        </label>
-
-        <label>
-          Modalidade
-          <select name="modalidade" required>
-            <option value="">Seleccione...</option>
-            <option>Presencial</option>
-            <option>Online</option>
-            <option>Sem preferência</option>
-          </select>
-        </label>
-      </div>
-
-      <label>
-        Mensagem
-        <textarea name="mensagem" rows="4" required
-                  placeholder="Indique, por exemplo, o que pretende melhorar ou quando gostaria de começar."></textarea>
-      </label>
-
-      <button class="button button-primary" type="submit">Enviar pedido</button>
-
-      <p class="form-note" data-default>O pedido é enviado diretamente, sem abrir o seu programa de email.</p>
-
-    </form>
-
-  </div>
-</section>
-
-</main>
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer>
-  <div class="container footer-grid">
-    <div></div>
-
-    <div class="footer-main">
-
-      <a href="#inicio" class="brand footer-brand">
-        <span class="brand-mark">
-          <svg viewBox="0 0 38 38" fill="none">
-            <path d="M19 3 L34 28 L4 28 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            <circle cx="19" cy="19" r="3.2" fill="currentColor"/>
-            <circle cx="19" cy="3" r="2" fill="currentColor"/>
-            <circle cx="34" cy="28" r="2" fill="currentColor"/>
-            <circle cx="4" cy="28" r="2" fill="currentColor"/>
-          </svg>
-        </span>
-        <span>
-          <strong>Explica FQA</strong>
-          <small>Física e Química A</small>
-        </span>
-      </a>
-
-      <p>Explicações de Física e Química A. Presencial em Guimarães ou online.</p>
-
-    </div>
-
-    <div class="footer-column">
-      <strong>Explorar</strong>
-      <a href="#sobre">Sobre</a>
-      <a href="#servicos">Explicações</a>
-      <a href="#modalidades">Modalidades</a>
-      <a href="#precos">Preços</a>
-    </div>
-
-    <div class="footer-column">
-      <strong>Contacto</strong>
-      <a href="tel:+351933368652">933 368 652</a>
-      <a href="mailto:explica.fqa@gmail.com">explica.fqa@gmail.com</a>
-      <span>Guimarães · Portugal</span>
-    </div>
-
-  </div>
-
-  <div class="container copyright">
-    © <span id="year"></span> Explica FQA <span>·</span> Todos os direitos reservados.
-  </div>
-</footer>
-
-<script src="script.js"></script>
-
-</body>
-</html>
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
+}
