@@ -751,7 +751,7 @@ svg text{
   color:var(--ink);
 
   /* cerca de 2/3 do tamanho anterior */
-  font-size:1.25rem;
+  font-size:0.85rem;
 
   line-height:1;
   letter-spacing:-.01em;
