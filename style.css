@@ -1102,9 +1102,26 @@ footer{
 @media (max-width:620px){
   .modality-illustration{height:220px;}
  }  
+/* Preçário — alinhamento uniforme dos preços */
 .price-line {
+  display: inline-block;
   white-space: nowrap;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Mantém as três linhas de preço visualmente equilibradas */
+.price-row .price-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .price-line {
+    font-size: 1.1rem;
+  }
 }
 
