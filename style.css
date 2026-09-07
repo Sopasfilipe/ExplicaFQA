@@ -657,7 +657,7 @@ svg text{
 }
 
 /* =========================================================
-   PREÇOS — apresentação melhorada
+   PREÇOS — apresentação
    ========================================================= */
 
 .pricing-section{
@@ -682,13 +682,24 @@ svg text{
   margin-top:32px;
 }
 
+/* Linhas */
+
 .price-row{
   display:grid;
-  grid-template-columns:1.4fr .8fr 1.1fr 1.7fr auto;
+
+  /* colunas mais equilibradas */
+  grid-template-columns:
+    1.2fr
+    1.15fr
+    .75fr
+    1.35fr
+    auto;
+
   align-items:center;
-  gap:24px;
-  padding:26px 4px;
+  gap:28px;
+  padding:24px 4px;
   border-bottom:1px solid var(--line-strong);
+
   transition:
     background var(--ease),
     box-shadow var(--ease);
@@ -719,7 +730,7 @@ svg text{
   color:var(--ink);
   font-family:"Fraunces", serif;
   font-weight:600;
-  font-size:1.15rem;
+  font-size:1.1rem;
   line-height:1.25;
 }
 
@@ -729,23 +740,27 @@ svg text{
   display:flex;
   align-items:baseline;
   justify-content:flex-start;
-  gap:5px;
+  gap:4px;
   min-width:0;
+  white-space:nowrap;
 }
 
 .price-row .price-value strong{
   font-family:"Fraunces", serif;
   font-weight:600;
   color:var(--ink);
-  font-size:1.9rem;
+
+  /* cerca de 2/3 do tamanho anterior */
+  font-size:1.25rem;
+
   line-height:1;
-  letter-spacing:-.02em;
+  letter-spacing:-.01em;
   white-space:nowrap;
 }
 
 .price-row .price-value span{
   color:var(--muted);
-  font-size:.72rem;
+  font-size:.68rem;
   white-space:nowrap;
 }
 
@@ -754,8 +769,8 @@ svg text{
 .price-row p{
   margin:0;
   color:var(--ink-soft);
-  font-size:.82rem;
-  line-height:1.55;
+  font-size:.8rem;
+  line-height:1.5;
 }
 
 /* Botão */
@@ -764,7 +779,7 @@ svg text{
   justify-self:end;
 }
 
-/* Evita quebras estranhas no preço */
+/* Evita quebras */
 
 .price-line{
   display:inline-block;
@@ -774,6 +789,93 @@ svg text{
   line-height:1.2;
 }
 
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width:1080px){
+
+  .price-row{
+    grid-template-columns:
+      1.25fr
+      1fr
+      .8fr;
+    gap:20px;
+  }
+
+  .price-row p,
+  .price-row .button{
+    display:none;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 900px
+   ========================================================= */
+
+@media (max-width:900px){
+
+  .price-row{
+    grid-template-columns:1fr auto;
+    gap:20px;
+  }
+
+  .price-row-label{
+    display:none;
+  }
+
+  .price-row h3{
+    font-size:1.05rem;
+  }
+
+  .price-row .price-value strong{
+    font-size:1.25rem;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width:620px){
+
+  .price-table{
+    margin-top:26px;
+  }
+
+  .price-row{
+    grid-template-columns:1fr auto;
+    gap:12px;
+    padding:18px 4px;
+  }
+
+  .price-row.featured{
+    padding-left:16px;
+  }
+
+  .price-row h3{
+    font-size:1rem;
+  }
+
+  .price-line{
+    font-size:1rem;
+  }
+
+  .price-row .price-value{
+    gap:3px;
+  }
+
+  .price-row .price-value strong{
+    font-size:1.15rem;
+  }
+
+  .price-row .price-value span{
+    font-size:.64rem;
+  }
+}
 /* =========================================================
    EXAMES
    ========================================================= */
