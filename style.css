@@ -869,7 +869,7 @@ svg text{
   }
 
   .price-row .price-value strong{
-    font-size:1.15rem;
+    font-size:0.75rem;
   }
 
   .price-row .price-value span{
@@ -1263,7 +1263,7 @@ footer{
   }
 
   .price-row .price-value strong{
-    font-size:1.7rem;
+    font-size:0.75em;
   }
 
   .price-row .price-value span{
