@@ -1101,7 +1101,10 @@ footer{
 }
 @media (max-width:620px){
   .modality-illustration{height:220px;}
-}
+ }  
 .price-line {
   white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 600;
 }
+
